@@ -1,8 +1,13 @@
 #ifndef BIT_DOG_LAB_REF_H
 #define BIT_DOG_LAB_REF_H
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "arduinoStyle.h"
+#include "displaySSD1306.h"
+#include "matrizLED.h"
+#include "comunicacao.h"
+#include "joystick.h"
+#include "microfone.h"
+#include "botoes.h"
 
 #define buzzerEsquerdo 21
 #define buzzerDireito  10
@@ -18,14 +23,9 @@
 #define joystickX   27
 #define joystickY   26
 
-#define matrizLED 7
+#define pinoMatrizLED 7
 
-typedef struct Joystick{ uint16_t eixoX, eixoY; bool botao; } Joystick;
-
-typedef struct matrizLEDs{ uint8_t R, G, B; } matrizLEDs;
-
-Joystick lerJoystick();
-
+#define pinMicrofone 28
 
 
 #endif
