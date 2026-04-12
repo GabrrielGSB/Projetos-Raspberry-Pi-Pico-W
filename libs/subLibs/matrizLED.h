@@ -5,8 +5,8 @@
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
 
-
 #define numLEDs 25
+#define pinoMatrizLED 7
 #define resolucaoIntensidade 25
 
 typedef struct infoMatrizLED{ uint8_t R, G, B; } infoMatrizLED;
@@ -23,7 +23,7 @@ extern infoMatrizLED leds[numLEDs];
 extern PIO np_pio;
 extern uint sm;
 
-void iniciarMatrizLED(const uint pin);
+void configurarMatrizLED();
 void definirIntensidadeLED_matriz(const uint8_t indice, 
                                         uint8_t intensidade);
 void definirLED_matriz(const uint8_t indice, 
@@ -33,5 +33,9 @@ void definirLED_matriz(const uint8_t indice,
 void limparMatrizLED();
 void preencherMatrizLED();
 bool preencherMatrizLED_loop(struct repeating_timer *t);
+
+void controlarRegiao2x2MatrizLED(uint8_t selecaoRegiao, 
+                                 bool luz1Ligada, bool luz2Ligada, 
+                                 bool luz3Ligada, bool luz4Ligada);
 
 #endif 

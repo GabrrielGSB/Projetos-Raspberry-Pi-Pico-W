@@ -21,6 +21,7 @@ const char* numToStr(uint num);
 void configurarDisplay();
 void atualizarDisplay();
 void limparDisplay();
+
 void desenharPixel(uint8_t x, uint8_t y);
 void apagarPixel(uint8_t x, uint8_t y);
 void desenharLinha(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
@@ -29,7 +30,13 @@ void desenharRetangulo(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 void apagarRetangulo(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 void desenharCirculo(uint8_t x0, uint8_t y0, uint8_t radius);
 void apagarCirculo(uint8_t x0, uint8_t y0, uint8_t radius);
+void desenharCirculoPreenchido(uint8_t x0, uint8_t y0, uint8_t radius);
 void desenharSimbolo(const char simbolo, uint8_t x, uint8_t y);
 void desenharString(const char* str, uint8_t x, uint8_t y);
+void desenharArco_90deg(uint8_t x0, uint8_t y0, uint8_t radius);
+void desenharSorriso(uint8_t x0, uint8_t y0, uint8_t radius);
 
+void desenharSimboloWiFi(uint8_t x, uint8_t y, uint8_t tamanho, bool sem_conexao);
+void desenharSimboloHTTP(uint8_t x, uint8_t y, bool sem_conexao);
+void desenharCarinhaSorridente(uint8_t x, uint8_t y, uint8_t tamanho);
 #endif

@@ -1,5 +1,10 @@
 #include "arduinoStyle.h"
 
+#include "hardware/clocks.h"
+#include "hardware/adc.h"
+#include "hardware/dma.h"
+#include "hardware/pwm.h"
+
 #define ADC_CLOCK_DIV 96.0f
 
 uint dma_channel;
@@ -157,7 +162,7 @@ void analogWrite_freq(int pin, float duty, int freq){
 uint32_t millis(){ return to_ms_since_boot(get_absolute_time()); }
 uint32_t micros(){ return time_us_32(); }
 
-    long map(long x, long in_min, long in_max, long out_min, long out_max) {
+long map(long x, long in_min, long in_max, long out_min, long out_max) {
         long valor = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         if (valor > out_max) return out_max;
         if (valor < out_min) return out_min;

@@ -1,11 +1,14 @@
 #include "matrizLED.h"
 #include "ws2818b.pio.h"
 
+
 struct repeating_timer timerMatrizLED;
 configMatrizLed configMatrizLED;
 infoMatrizLED leds[numLEDs];
 PIO np_pio;
 uint sm;
+
+uint vermelho, verde, brilho;
 
 /**
  * @brief Inicializa a matriz de LEDs WS2812B.
@@ -16,7 +19,7 @@ uint sm;
  * Caso esteja cheio, ela tentará o pio1 automaticamente.
  * * @note O timer é configurado para rodar a cada 200 microssegundos, o que é adequado para atualizar os LEDs sem causar flickering perceptível.
  */
-void iniciarMatrizLED(const uint pin) {
+void configurarMatrizLED() {
     // Cria programa PIO.
     uint offset = pio_add_program(pio0, &ws2818b_program);
     np_pio = pio0;
@@ -29,7 +32,7 @@ void iniciarMatrizLED(const uint pin) {
     }
 
     // Inicia programa na máquina PIO obtida.
-    ws2818b_program_init(np_pio, sm, offset, pin, 800000.f);
+    ws2818b_program_init(np_pio, sm, offset, pinoMatrizLED, 800000.f);
 
     configMatrizLED.contador = resolucaoIntensidade;
 
@@ -81,7 +84,7 @@ void preencherMatrizLED(){
         pio_sm_put_blocking(np_pio, sm, leds[i].R);
         pio_sm_put_blocking(np_pio, sm, leds[i].B);
     }
-    sleep_us(157); // sinal de RESET do datasheet.
+    sleep_us(157); 
 }
 
 bool preencherMatrizLED_loop(struct repeating_timer *t){
@@ -105,6 +108,108 @@ bool preencherMatrizLED_loop(struct repeating_timer *t){
     return true;
 }
 
+static void regiao1MatrizLED(bool selecionada, bool ligada) {
+    uint8_t vermelho = 0;
+    uint8_t verde    = 0;
+    uint8_t azul     = 0;
+
+    if (ligada) { vermelho = 255; verde = 255; }
+    else        { vermelho = 0; verde = 0;     }
+    
+    if (selecionada) azul = 1;
+    else             azul = 0;
+
+    definirLED_matriz(0, vermelho,verde,azul); definirIntensidadeLED_matriz(0, 1);
+    definirLED_matriz(1, vermelho,verde,azul); definirIntensidadeLED_matriz(1, 1);
+    definirLED_matriz(8, vermelho,verde,azul); definirIntensidadeLED_matriz(8, 1);
+    definirLED_matriz(9, vermelho,verde,azul); definirIntensidadeLED_matriz(9, 1);
+}
+static void regiao2MatrizLED(bool selecionada, bool ligada) {
+    uint8_t vermelho = 0;
+    uint8_t verde    = 0;
+    uint8_t azul     = 0;
+
+    if (ligada) { vermelho = 255; verde = 255; }
+    else        { vermelho = 0; verde = 0;     }
+    
+    if (selecionada) azul = 1;
+    else             azul = 0;
+
+    definirLED_matriz(3, vermelho,verde,azul); definirIntensidadeLED_matriz(3, 1);
+    definirLED_matriz(4, vermelho,verde,azul); definirIntensidadeLED_matriz(4, 1);
+    definirLED_matriz(5, vermelho,verde,azul); definirIntensidadeLED_matriz(5, 1);
+    definirLED_matriz(6, vermelho,verde,azul); definirIntensidadeLED_matriz(6, 1);
+}
+static void regiao3MatrizLED(bool selecionada, bool ligada) {
+    uint8_t vermelho = 0;
+    uint8_t verde    = 0;
+    uint8_t azul     = 0;
+
+    if (ligada) { vermelho = 255; verde = 255; }
+    else        { vermelho = 0; verde = 0;     }
+    
+    if (selecionada) azul = 1;
+    else             azul = 0;
+
+    definirLED_matriz(15, vermelho,verde,azul); definirIntensidadeLED_matriz(15, 1);
+    definirLED_matriz(16, vermelho,verde,azul); definirIntensidadeLED_matriz(16, 1);
+    definirLED_matriz(23, vermelho,verde,azul); definirIntensidadeLED_matriz(23, 1);
+    definirLED_matriz(24, vermelho,verde,azul); definirIntensidadeLED_matriz(24, 1);
+}
+static void regiao4MatrizLED(bool selecionada, bool ligada) {
+    uint8_t vermelho = 0;
+    uint8_t verde    = 0;
+    uint8_t azul     = 0;
+
+    if (ligada) { vermelho = 255; verde = 255; }
+    else        { vermelho = 0; verde = 0;     }
+    
+    if (selecionada) azul = 1;
+    else             azul = 0;
+
+    definirLED_matriz(18, vermelho,verde,azul); definirIntensidadeLED_matriz(18, 1);
+    definirLED_matriz(19, vermelho,verde,azul); definirIntensidadeLED_matriz(19, 1);
+    definirLED_matriz(20, vermelho,verde,azul); definirIntensidadeLED_matriz(20, 1);
+    definirLED_matriz(21, vermelho,verde,azul); definirIntensidadeLED_matriz(21, 1);
+}
+
+void controlarRegiao2x2MatrizLED(uint8_t selecaoRegiao, 
+                                 bool luz1Ligada, bool luz2Ligada, 
+                                 bool luz3Ligada, bool luz4Ligada) {
+
+    if      (selecaoRegiao == 1) { 
+        regiao1MatrizLED(true,  luz1Ligada);
+        regiao2MatrizLED(false, luz2Ligada);
+        regiao3MatrizLED(false, luz3Ligada);
+        regiao4MatrizLED(false, luz4Ligada);
+    }
+    else if (selecaoRegiao == 2) { 
+        regiao1MatrizLED(false, luz1Ligada);
+        regiao2MatrizLED(true,  luz2Ligada);
+        regiao3MatrizLED(false, luz3Ligada);
+        regiao4MatrizLED(false, luz4Ligada);
+    }
+    else if (selecaoRegiao == 3) { 
+        regiao1MatrizLED(false, luz1Ligada);
+        regiao2MatrizLED(false, luz2Ligada);
+        regiao3MatrizLED(true,  luz3Ligada);
+        regiao4MatrizLED(false, luz4Ligada);
+
+    }
+    else if (selecaoRegiao == 4) { 
+        regiao1MatrizLED(false, luz1Ligada);
+        regiao2MatrizLED(false, luz2Ligada);
+        regiao3MatrizLED(false, luz3Ligada);
+        regiao4MatrizLED(true,  luz4Ligada);
+    } 
+    else {
+        regiao1MatrizLED(false, luz1Ligada);
+        regiao2MatrizLED(false, luz2Ligada);
+        regiao3MatrizLED(false, luz3Ligada);
+        regiao4MatrizLED(false, luz4Ligada);
+    }
+        
+}
 
 
 

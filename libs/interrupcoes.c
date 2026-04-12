@@ -3,21 +3,24 @@
 #define botaoB 6
 #define botaoA 5
 
-int sensibilidadeSom = 0;
+#define numTELAS 2
+
+volatile int telaAtualint = 1;
+volatile size_t timerBotao = 0;
+
+volatile bool botaoAiniciouWIFI;
+volatile bool botaoBiniciouServerHTTP;
 
 void gpio_callback(uint gpio, uint32_t events) {
-    static uint32_t ultimo_tempo = 0;
+    if ((millis() - timerBotao) < 200) return; 
+    timerBotao = millis();
 
-    if (millis() - ultimo_tempo < 150) return; 
-    ultimo_tempo = millis();
-
-    if (gpio == botaoA) {
-        sensibilidadeSom++;
+    if      (gpio == botaoA) {
+        if (!botaoAiniciouWIFI) botaoAiniciouWIFI = true;
+        else                    telaAtualint = (telaAtualint % numTELAS) + 1;
     } 
     else if (gpio == botaoB) {
-        sensibilidadeSom--;
+        if (!botaoBiniciouServerHTTP) botaoBiniciouServerHTTP = true;
+        else                    telaAtualint = ((telaAtualint + numTELAS - 2) % numTELAS) + 1;
     }
-
-    if      (sensibilidadeSom <= 0)  sensibilidadeSom = 0;
-    else if (sensibilidadeSom >= 19) sensibilidadeSom = 19;
 }

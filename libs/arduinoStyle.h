@@ -4,10 +4,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "hardware/clocks.h"
-#include "hardware/adc.h"
-#include "hardware/dma.h"
-#include "hardware/pwm.h"
 
 #define INPUT  0
 #define OUTPUT 1
@@ -65,10 +61,11 @@ void delay_s(float time_s);
 void tone(int pin, int freq, float intensidade);
 void noTone(int pin);
 
+long map(long x, long in_min, long in_max, long out_min, long out_max);
+
 uint32_t millis();
 uint32_t micros();
 
-long map(long x, long in_min, long in_max, long out_min, long out_max);
 
 
 #endif

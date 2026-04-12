@@ -56,23 +56,33 @@
                                hardware_pwm)
 
         target_include_directories(arduinoStyle PUBLIC libs)
+        
+    # Configuração da LIB soms
+        add_library(soms libs/subLibs/soms.c)
+
+        target_link_libraries(soms
+                               arduinoStyle)    
+
+        target_include_directories(soms PUBLIC libs/subLibs)
+    # Configuração da LIB interrupcoes
+        add_library(interrupcoes libs/interrupcoes.c)
+
+        target_link_libraries(interrupcoes 
+                               arduinoStyle
+                               hardware_i2c
+                               pico_cyw43_arch_lwip_threadsafe_background)
+
+        target_include_directories(interrupcoes PUBLIC libs)
 
     # Configuração da LIB comunicacao
         add_library(comunicacao libs/comunicacao.c)
 
         target_link_libraries(comunicacao
                                pico_stdlib 
+                               interrupcoes
                                hardware_i2c)
 
         target_include_directories(comunicacao PUBLIC libs)
-    
-    # Configuração da LIB interrupcoes
-        add_library(interrupcoes libs/interrupcoes.c)
-
-        target_link_libraries(interrupcoes 
-                               arduinoStyle)
-
-        target_include_directories(interrupcoes PUBLIC libs)
     
     # Configuração da LIB displaySSD1306
         add_library(displaySSD1306 libs/subLibs/displaySSD1306.c)
@@ -118,7 +128,29 @@
 
         pico_generate_pio_header(matrizLED ${CMAKE_CURRENT_LIST_DIR}/ws2818b.pio)
     
-    
+    # Configuração da LIB HTTP
+        add_library(HTTP libs/subLibs/HTTP.c)
+
+        target_link_libraries(HTTP 
+                               arduinoStyle
+                               matrizLED
+                               comunicacao 
+                               pico_stdlib 
+                               pico_cyw43_arch_lwip_threadsafe_background)
+
+        target_include_directories(HTTP PUBLIC libs/subLibs)
+
+    # Configuração da LIB telasDisplaySSD1306
+        add_library(telasDisplaySSD1306 telasDisplay/telasDisplaySSD1306.c)
+
+        target_link_libraries(telasDisplaySSD1306
+                               arduinoStyle
+                               interrupcoes
+                               displaySSD1306)    
+
+        target_include_directories(telasDisplaySSD1306 PUBLIC telasDisplay)
+
+
     # Configuração da LIB bitDogLabRef
         add_library(bitDogLabRef libs/bitDogLabRef.c)
 
@@ -130,6 +162,7 @@
                                matrizLED
                                joystick
                                microfone
+                               soms
                                botoes)
 
         target_include_directories(bitDogLabRef PUBLIC libs)
@@ -150,7 +183,12 @@
     # Add the standard library to the build
     target_link_libraries(Teste 
                            interrupcoes
-                           bitDogLabRef)
+                           comunicacao
+                           bitDogLabRef
+                           HTTP
+                           telasDisplaySSD1306
+                           pico_multicore
+                           pico_cyw43_arch_lwip_threadsafe_background)
 
 
     # Add the standard include files to the build

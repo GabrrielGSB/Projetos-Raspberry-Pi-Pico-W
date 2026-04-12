@@ -8,6 +8,7 @@
 #include "joystick.h"
 #include "microfone.h"
 #include "botoes.h"
+#include "soms.h"
 
 #define buzzerEsquerdo 21
 #define buzzerDireito  10
