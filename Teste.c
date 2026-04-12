@@ -39,20 +39,28 @@ void main1() {
 // =================================================================
 #pragma region // ROTINA DO CORE 0 
 
+bool wifiFoiIniciado = false;
+bool httpFoiIniciado = false;
 int main() {
-    multicore_launch_core1(main1);
     stdio_init_all();
-
-    if (!noWIFI) iniciarWiFi();
-    if (!noHTTP) iniciarServerHTTP();
+    multicore_launch_core1(main1);
 
     while (1) {
+        if (!noWIFI && !wifiFoiIniciado) {
+            iniciarWiFi();
+            wifiFoiIniciado = true; 
+        }
+        
+        if (!noHTTP && !httpFoiIniciado && wifiFoiIniciado) {
+            iniciarServerHTTP();
+            httpFoiIniciado = true;
+        }
+
         if (!noWIFI) {
             cyw43_arch_poll();  
         }
         delay(100); 
     }
-    
     return 0;
 }
 
